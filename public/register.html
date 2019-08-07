@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Schat アカウント登録</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Schat アカウント登録</h1>
+    <p>
+        これはSchatのアカウント登録画面です<br>
+        アカウント情報はipアドレスに割り当てられます<br>
+        もし複数の端末から同じアカウントを使用したい場合、それ用のアカウントを作成してください<br>
+        すでにアカウントが存在している場合は書き換えられます<br>
+        必要な情報はユーザー名です、ipアドレス&ユーザーidは自動取得です<br>
+        ※同じ名前は使用できません（アカウント偽装を回避するため）<br>
+    </p>
+    <textarea id="name"></textarea>
+    <button id="create" onclick="create()">作成！</button>
+    <script>
+        function create(){
+            if($("#name").val().length!=7){
+                alert("7文字にしてください");
+            }
+            $.ajax({
+    type: "POST",
+    url: "/api/register",
+    data: {
+        name: $("#name").val(),
+        hash:createuserhash()
+    },
+    success: (data) => {
+        if(data="false"){
+            location.href=location.href.replace("register","chat")
+        }else{
+            alert("その名前は既に使われています")
+        }
+    }
+});
+        }
+        function getime(mode) {
+    var jikan = new Date();
+    var hour = jikan.getHours();
+    var minu = jikan.getMinutes();
+    var seco = jikan.getSeconds();
+    var year = jikan.getFullYear();
+    var mont = jikan.getMonth() + 1;
+    var daay = jikan.getDate();
+    var th = ('00' + hour).slice(-2);
+    var tm = ('00' + minu).slice(-2);
+    var ts = ('00' + seco).slice(-2);
+    var dy = ('0000' + year).slice(-4);
+    var dm = ('00' + mont).slice(-2);
+    var dd = ('00' + daay).slice(-2);
+    if (mode == "pad") {
+        var time = dy + dm + dd + th + tm + ts;
+    } else {
+        var time = dy + "/" + dm + "/" + dd + th + ":" + tm + ":" + ts;
+    }
+
+    return time;
+}
+        function createuserhash() {
+            a = "00000000000000";
+            getime("pad")
+                .split("")
+                .map((val, ind, ary) => {
+                    return a = a + 1 ^ ary.join("").slice(ind);
+                });
+            b = 0;
+            a
+                .toString()
+                .split(/(...)/)
+                .filter((v) => { return v !== "" })
+                .map((v) => { b += parseInt(v) });
+            return ("0000" + b).slice(-4)
+
+        }
+    </script>
+</body>
+
+</html>
