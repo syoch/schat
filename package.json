@@ -10,9 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dirty": "^1.1.0",
-    "mongodb": "^3.3.0-beta2",
-    "mysql": "^2.17.1",
     "ws": "^7.1.1"
   }
 }
